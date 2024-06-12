@@ -6,7 +6,7 @@ class LoginStore = _LoginStore with _$LoginStore;
 
 abstract class _LoginStore with Store {
   @observable
-  String username = "";
+  String username = "Convidado";
 
   @observable
   String bearerToken = "";

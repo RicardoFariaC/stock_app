@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:stock_app/models/handlers/handlersRepository/login_credential_handler.dart';
 import 'package:stock_app/models/handlers/login_credential.dart';
 import 'package:stock_app/store/login.store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -27,6 +28,7 @@ class _LoginViewState extends State<LoginView> {
     _formKey.currentState?.save();
     _handleAuth().then((value) {
       if (value) {
+        _sharedPrefs(_credential).then((_){});
         store.setBearerToken("Bearer ${_credential.token}");
         store.setUsername(_credential.username);
         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -35,6 +37,12 @@ class _LoginViewState extends State<LoginView> {
         );
       }
     });
+  }
+
+  Future<void> _sharedPrefs(LoginCredential credential) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("username", credential.username);
+    await prefs.setString("token", credential.token);
   }
 
   Future<bool> _handleAuth() async {
@@ -59,7 +67,7 @@ class _LoginViewState extends State<LoginView> {
               children: [
                 Image.asset("assets/stock_logo.png",
                     height: 80, color: Colors.green),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 TextFormField(
@@ -75,8 +83,8 @@ class _LoginViewState extends State<LoginView> {
                     onFieldSubmitted: (_) {
                       FocusScope.of(context).requestFocus(_focus);
                     },
-                    validator: (_username) {
-                      final username = _username ?? "";
+                    validator: (user) {
+                      final username = user ?? "";
                       if (username.isEmpty) {
                         return "O campo de nome de usuário está vazio.";
                       }
@@ -95,8 +103,8 @@ class _LoginViewState extends State<LoginView> {
                         borderRadius: BorderRadius.all(Radius.circular(12.0))),
                     hintText: 'Senha',
                   ),
-                  validator: (_senha) {
-                    final senha = _senha ?? "";
+                  validator: (pass) {
+                    final senha = pass ?? "";
                     if (senha.isEmpty) {
                       return "O campo de senha está vazia";
                     }
@@ -141,7 +149,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed("/registration");
+                    Navigator.of(context).pushNamed("/register");
                   },
                   style: ButtonStyle(
                     shape: MaterialStatePropertyAll(

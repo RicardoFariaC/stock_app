@@ -21,7 +21,7 @@ class _ListItemsState extends State<ListItems> {
   }
 
   getSpecies() async {
-    await species.getActiveSpecies();
+    // await species.getActiveSpecies();
     setState(() {
       specieList = species.species;
     });
@@ -52,7 +52,7 @@ class _ListItemsState extends State<ListItems> {
             );
           }
         } else {
-          return Stack(
+          return const Stack(
             children: [
               CircularProgressIndicator()
             ],

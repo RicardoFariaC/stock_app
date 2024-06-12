@@ -5,9 +5,9 @@ class Specie {
   late final int id;
   late final String image;
   late final String name;
+  late final String specie;
   late final String description;
   late final User registeredBy;
-  late final bool isActive;
   late final String createdAt;
   late final String updatedAt;
 
@@ -15,18 +15,19 @@ class Specie {
     required this.id,
     required this.name,
     required this.image,
+    required this.specie,
     required this.description,
     required this.registeredBy,
-    required this.isActive,
     required this.createdAt,
     required this.updatedAt
   });
 
   Specie.fromJson(Map<String, dynamic> json) {
     id = json["id"];
+    image = json["image"];
     name = json["name"];
+    specie = json["specie"];
     description = json["description"];
-    registeredBy = User.fromSpecieJson(json["user"]);
-    isActive = json["is_active"];
+    registeredBy = User.fromSpecieJson(json["registered_by"]);
   }
 }

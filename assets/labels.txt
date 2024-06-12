@@ -1,10 +1,4 @@
-# stock_app
-
-An IA App to predict and recognize plant and fruit species by photo.
-
-## Species Registered
-
-aloevera
+aloe vera
 banana
 bilimbi
 melão cantaloupe
@@ -32,5 +26,5 @@ soja
 espinafre
 batata doce
 tabaco
-maçã java
+maçã_java
 melancia

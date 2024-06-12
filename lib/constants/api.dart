@@ -1,7 +1,7 @@
 import "package:dio/dio.dart";
 
-String api_url = "secret";
-String baseURL = "http://$api_url:8080";
+String apiUrl = "192.168.31.31";
+String baseURL = "http://$apiUrl:8080";
 
 BaseOptions options = BaseOptions(
   baseUrl: baseURL,
