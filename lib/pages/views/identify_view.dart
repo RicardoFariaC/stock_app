@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stock_app/pages/views/specie_identified_view.dart';
 import 'package:stock_app/pages/widgets/camera_button.dart';
 
 class IdentifyView extends StatefulWidget {
@@ -16,10 +17,11 @@ class _IdentifyViewState extends State<IdentifyView> {
   List<CameraDescription> cameras = [];
   CameraController? _controller;
   XFile? image;
+  File? arquivo;
   Size? size;
   double? deviceRatio;
-  double? XScale;
-  double? YScale;
+  double? xScale;
+  double? yScale;
   int detected = 0;
 
   @override
@@ -86,9 +88,14 @@ class _IdentifyViewState extends State<IdentifyView> {
                               padding: const EdgeInsets.only(
                                   left: 16, right: 16, top: 8),
                               child: FilledButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SpecieIdentifiedView(filePath: arquivo!),
+                                  ),
+                                ),
                                 style: ButtonStyle(
-                                  shape: MaterialStatePropertyAll(
+                                  shape: WidgetStatePropertyAll(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -130,11 +137,11 @@ class _IdentifyViewState extends State<IdentifyView> {
                 children: [
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(Icons.close_rounded),
+                    icon: const Icon(Icons.close_rounded),
                     color: Colors.white,
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.black54)),
+                            WidgetStatePropertyAll(Colors.black54)),
                   ),
                 ],
               ),
@@ -146,12 +153,17 @@ class _IdentifyViewState extends State<IdentifyView> {
   }
 
   _arquivoWidget() {
-    return image == null
-        ? _cameraPreviewWidget()
-        : Image.file(
-            File(image!.path),
-            fit: BoxFit.contain,
-          );
+    if(image == null) {
+      return _cameraPreviewWidget();
+    } else {
+      setState(() {
+        arquivo = File(image!.path);
+      });
+      return Image.file(
+        File(image!.path),
+        fit: BoxFit.contain,
+      );
+    }
   }
 
   Widget _cameraPreviewWidget() {

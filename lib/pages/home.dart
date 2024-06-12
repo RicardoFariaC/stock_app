@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stock_app/pages/views/home_view.dart';
+import 'package:stock_app/pages/views/profile_view.dart';
 import 'package:stock_app/pages/views/redirect_view.dart';
+import 'package:stock_app/pages/views/search_view.dart';
+import 'package:stock_app/store/login.store.dart';
 
 class Home extends StatefulWidget {
   Home({super.key});
@@ -16,7 +20,7 @@ class _HomeState extends State<Home> {
   final List<Widget> viewsList = [
     const HomeView(),
     const RedirectView(),
-    Container(),
+    const ProfileView(),
   ];
 
   @override
@@ -26,8 +30,26 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<LoginStore>(context);
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return SearchView();
+                  },
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.search_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ],
         title: Image.asset(
           "assets/stock_logo.png",
           height: 48,
@@ -39,36 +61,21 @@ class _HomeState extends State<Home> {
           borderRadius: BorderRadius.circular(12),
           side: BorderSide.none,
         ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.person_rounded,
-            color: Colors.white,
-          ),
-          onPressed: () {},
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.settings_rounded, color: Colors.white),
-          )
-        ],
       ),
-      body: Column(
+      body: Stack(
         children: [
           viewsList[selectedIndex],
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: _navBar(<IconData>[
-                Icons.home_rounded,
-                Icons.camera_alt_rounded,
-                Icons.history_rounded
-              ], <String>[
-                "Início",
-                "Identificar",
-                "Histórico"
-              ]),
-            ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _navBar(<IconData>[
+              Icons.home_rounded,
+              Icons.camera_alt_rounded,
+              Icons.account_circle_rounded
+            ], <String>[
+              "Início",
+              "Identificar",
+              (store.username)
+            ]),
           ),
         ],
       ),
@@ -76,18 +83,24 @@ class _HomeState extends State<Home> {
   }
 
   Widget _navBar(List<IconData> navBarIcons, List<String> navBarLabels) {
+    double phoneScale = MediaQuery.of(context).textScaler.scale(1);
     return Container(
-      height: 65,
+      height: phoneScale < 1.0
+          ? MediaQuery.of(context).size.height * .07
+          : phoneScale < 1.5
+              ? MediaQuery.of(context).size.height * .075 * phoneScale
+              : MediaQuery.of(context).size.height * .066 * 1.5,
       margin: const EdgeInsets.only(right: 12, left: 12, bottom: 12),
       decoration: BoxDecoration(
-          color: Theme.of(context).appBarTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withAlpha(20),
-                blurRadius: 20,
-                spreadRadius: 10)
-          ]),
+        color: Theme.of(context).appBarTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withAlpha(20),
+              blurRadius: 20,
+              spreadRadius: 10)
+        ],
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -97,7 +110,7 @@ class _HomeState extends State<Home> {
           return Material(
             color: Colors.transparent,
             child: InkWell(
-              customBorder: CircleBorder(),
+              customBorder: const CircleBorder(),
               onTap: () {
                 setState(() {
                   selectedIndex = index;
@@ -108,14 +121,14 @@ class _HomeState extends State<Home> {
                 children: [
                   Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                         top: 10, bottom: 5, left: 20, right: 20),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
                         AnimatedContainer(
                           curve: Curves.easeIn,
-                          duration: Duration(milliseconds: 150),
+                          duration: const Duration(milliseconds: 150),
                           width: 55,
                           height: 25,
                           decoration: BoxDecoration(
@@ -129,7 +142,16 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                   ),
-                  Text(navBarLabels[index])
+                  Text(
+                    navBarLabels[index],
+                    style: TextStyle(
+                      fontSize: phoneScale < 1.0
+                          ? 16
+                          : phoneScale < 1.5
+                              ? 16
+                              : 8,
+                    ),
+                  )
                 ],
               ),
             ),

@@ -1,5 +1,5 @@
 
-import 'package:stock_app/models/enums/Roles.dart';
+import 'package:stock_app/models/enums/roles.dart';
 
 class User {
   late final int id;
